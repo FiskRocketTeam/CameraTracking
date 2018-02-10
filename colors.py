@@ -42,22 +42,27 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 	blue=cv2.inRange(hsv,blue_lower,blue_upper)
 	yellow=cv2.inRange(hsv,yellow_lower,yellow_upper)
 
+	# Until someone explains to me why we have dilate here, I'm removing it.
 	#Morphological transformation, Dilation
-	kernal = np.ones((5 ,5), "uint8")
+	# kernal = np.ones((5 ,5), "uint8")
 
 
-	red=cv2.dilate(red, kernal)
-	res=cv2.bitwise_and(img, img, mask = red)
+	# red=cv2.dilate(red, kernal)
+	# res=cv2.bitwise_and(img, img, mask = red)
 
-	blue=cv2.dilate(blue,kernal)
-	res1=cv2.bitwise_and(img, img, mask = blue)
+	# blue=cv2.dilate(blue,kernal)
+	# res1=cv2.bitwise_and(img, img, mask = blue)
 
-	yellow=cv2.dilate(yellow,kernal)
-	res2=cv2.bitwise_and(img, img, mask = yellow)
+	# yellow=cv2.dilate(yellow,kernal)
+	# res2=cv2.bitwise_and(img, img, mask = yellow)
 
 	Red = False
 	Blue = False
 	Green = False
+
+
+	# We may want to decrease the required size of the rectangle just so that we
+	# can more accurately find smaller targets from higher up.
 
 	#Tracking the Blue Color
 	(contours,hierarchy)=cv2.findContours(blue,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -66,7 +71,7 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 		if(area > 300):
 			x,y,w,h = cv2.boundingRect(contour)
 			cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-			cv2.putText(img,"Blue color",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0))
+			# cv2.putText(img,"B",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0))
 			Blue = True
 
 	#Tracking the pink Color
@@ -78,7 +83,7 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 			x,y,w,h = cv2.boundingRect(contour)
 			# The selected color was somewhat random, but it's actually close enough anyways.
 			cv2.rectangle(img,(x,y),(x+w,y+h),(122,0,255),2)
-			cv2.putText(img,"P",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(122,0,255))
+			# cv2.putText(img,"P",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(122,0,255))
 			Red = True
 
 	#Tracking the yellow Color
@@ -88,7 +93,7 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 		if(area > 300):
 			x,y,w,h = cv2.boundingRect(contour)
 			cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-			cv2.putText(img,"Y",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 1.0,(0,255,0))
+			# cv2.putText(img,"Y",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 1.0,(0,255,0))
 			Green = True
 	print '{}, {}, {}'.format(Red, Blue, Green)
 
@@ -99,5 +104,6 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 		camera.close()
 		cv2.destroyAllWindows()
 		break
+		
 	# Effectively dump whatever we had before.
 	rawCapture.truncate(0)
