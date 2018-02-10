@@ -29,7 +29,7 @@ yellow_upper=np.array([60,255,255],np.uint8)
 
 out = cv2.VideoWriter('output.avi', -1, 20, (640, 480))
 print 'Red, Green, Blue'
-for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_port=True):
+for frame in camera.capture_continuous(out, format = "bgr", use_video_port=True):
 
 	img = frame.array
 	#converting frame(img i.e BGR) to HSV (hue-saturation-value)
@@ -98,4 +98,4 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 		cv2.destroyAllWindows()
 		break
 	out.release()
-	rawCapture.truncate(0)
+	out.truncate(0)
