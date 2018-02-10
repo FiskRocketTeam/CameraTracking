@@ -27,7 +27,8 @@ blue_upper=np.array([250,100,100],np.uint8)
 yellow_lower=np.array([22,60,200],np.uint8)
 yellow_upper=np.array([60,255,255],np.uint8)
 
-out = cv2.VideoWriter('output.avi', -1, 20, (640, 480))
+# Currently unused.
+# out = cv2.VideoWriter('output.avi', -1, 20, (640, 480))
 
 print 'Red, Green, Blue'
 for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_port=True):
@@ -68,15 +69,16 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 			cv2.putText(img,"Blue color",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(255,0,0))
 			Blue = True
 
-	#Tracking the Red Color
+	#Tracking the pink Color
 	(contours,hierarchy)=cv2.findContours(red,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 	for pic, contour in enumerate(contours):
 		area = cv2.contourArea(contour)
 		if(area > 300):
 
 			x,y,w,h = cv2.boundingRect(contour)
-			cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)
-			cv2.putText(img,"RED color",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(0,0,255))
+			# The selected color was somewhat random, but it's actually close enough anyways.
+			cv2.rectangle(img,(x,y),(x+w,y+h),(122,0,255),2)
+			cv2.putText(img,"P",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 0.7,(122,0,255))
 			Red = True
 
 	#Tracking the yellow Color
@@ -86,17 +88,16 @@ for frame in camera.capture_continuous(rawCapture, format = "bgr", use_video_por
 		if(area > 300):
 			x,y,w,h = cv2.boundingRect(contour)
 			cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-			cv2.putText(img,"yellow color",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 1.0,(0,255,0))
+			cv2.putText(img,"Y",(x,y),cv2.FONT_HERSHEY_SIMPLEX, 1.0,(0,255,0))
 			Green = True
 	print '{}, {}, {}'.format(Red, Blue, Green)
 
 
-	#cv2.imshow("Redcolour",red)
 	cv2.imshow("Color Tracking",img)
-	#cv2.imshow("red",res)
-	if cv2.waitKey(100) & 0xFF == ord('q'):
-		camera.release()
+	# Force a wait time of 1 ms to take input.
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+		camera.close()
 		cv2.destroyAllWindows()
 		break
-	rawCapture.release()
+	# Effectively dump whatever we had before.
 	rawCapture.truncate(0)
