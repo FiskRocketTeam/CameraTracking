@@ -20,12 +20,12 @@ red_lower=np.array([136,87,111],np.uint8)
 red_upper=np.array([180,255,255],np.uint8)
 
 #defining the Range of Blue color
-blue_lower=np.array([100,10,10],np.uint8)
-blue_upper=np.array([250,100,100],np.uint8)
+blue_lower=np.array([110,50,50],np.uint8)
+blue_upper=np.array([130,255,255],np.uint8)
 
 #defining the Range of yellow color
-yellow_lower=np.array([22,60,200],np.uint8)
-yellow_upper=np.array([60,255,255],np.uint8)
+yellow_lower=np.array([15,100,100],np.uint8)
+yellow_upper=np.array([35,255,255],np.uint8)
 
 # Currently unused.
 # out = cv2.VideoWriter('output.avi', -1, 20, (640, 480))
