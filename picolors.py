@@ -7,6 +7,10 @@ import time
 camera = PiCamera()
 camera.resolution = (640, 480)
 
+# Set up the camera with the desired parameters.
+camera.framerate = 30
+camera.resolution = (640, 320)
+
 # Set up a stream to dump camera info into.
 rawCapture = PiRGBArray(camera)
 
