@@ -5,21 +5,23 @@ import numpy as np
 import time
 
 camera = PiCamera()
-
-# Set up the camera with the desired parameters.
-camera.framerate = 20
 camera.resolution = (640, 480)
 
-# Set up a stream to dump camera info into.
-rawCapture = PiRGBArray(camera, size=(640,480))
+# Set up the camera with the desired parameters.
+camera.framerate = 30
+camera.resolution = (640, 320)
 
-time.sleep(0.1)
+# Set up a stream to dump camera info into.
+rawCapture = PiRGBArray(camera)
 
 # For use on the Raspberry Pi.
-fourcc = cv2.cv.CV_FOURCC(*"XVID")
+fourcc = cv2.cv.CV_FOURCC(*'XVID')
+
+# For use on other systems.
+# fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
 # Output stream for video.
-out = cv2.VideoWriter('output.avi', fourcc, camera.framerate, (640, 480))
+out = cv2.VideoWriter('output.avi', fourcc, 20, (640, 480))
 
 # Establish hsv color ranges for our targets.
 
@@ -35,13 +37,22 @@ upper_blue = np.uint8([120, 255, 255])
 lower_yellow = np.uint8([15, 100, 100])
 upper_yellow = np.uint8([35, 255, 255])
 
+# Set the runtime of the program to ten seconds.
+runtime = 5
+starttime = time.time()
+
+out.open()
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     img = frame.array
-
+# Replace the while loop with a broken for loop.
+    if abs(starttime - time.time()) > runtime:
+        break
+# while abs(starttime - time.time()) < runtime:
+#     img = camera.capture(rawCapture, format = "bgr", use_video_port=True).array
     # By putting this up here, the playback appears at normal speed as the
     # framerate is forced to drop a little bit.
-    # key = cv2.waitKey(1)
+    key = cv2.waitKey(1)
 
     # Convert the color to be something a little more useful in finding ranges.
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -56,19 +67,15 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     total_mask  = cv2.bitwise_or(total_mask, yellow_mask)
     blacked_img = cv2.bitwise_and(hsv, hsv,  mask=total_mask)
 
-    out.write(img)
-
-    #cv2.imshow('joined mask', blacked_img)
-
-    key = cv2.waitKey(1) & 0xFF
+    # cv2.imshow('joined mask', blacked_img)
+    out.write(blacked_img)
 
     # Remove all data from the previous frame.
     rawCapture.truncate(0)
-    if key == ord("q"):
-	break
 
 
 # Close everything that we have open.
 cv2.destroyAllWindows()
 camera.close()
 out.release()
+
